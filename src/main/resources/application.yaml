@@ -1,0 +1,21 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: spring_data_jpa
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring_data_jpa
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update # Options: none, validate, update, create, create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
