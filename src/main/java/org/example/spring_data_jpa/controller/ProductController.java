@@ -1,7 +1,11 @@
 package org.example.spring_data_jpa.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.spring_data_jpa.dto.request.ProductRequest;
+import org.example.spring_data_jpa.dto.response.BaseBodyResponse;
 import org.example.spring_data_jpa.dto.response.ProductResponse;
 import org.example.spring_data_jpa.service.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
+@Tag(name = "Product Controller", description = "For Product Management API")
 public class ProductController {
 
     private final ProductService productService;
 
+    @Operation(
+            summary = "Get Product",
+            description = "Get product by id"
+    )
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.findById(id));
+    public ResponseEntity<BaseBodyResponse<ProductResponse>> findById( @Parameter(description = "Product ID") @PathVariable Long id) {
+        return BaseBodyResponse.success(productService.findById(id), "Success");
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> save(@RequestBody ProductRequest product) {
-        return ResponseEntity.ok(productService.save(product));
+    public ResponseEntity<BaseBodyResponse<ProductResponse>> save(@RequestBody ProductRequest product) {
+        return BaseBodyResponse.success(productService.save(product), "Success");
     }
 }

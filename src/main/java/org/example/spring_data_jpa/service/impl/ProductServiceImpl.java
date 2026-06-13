@@ -1,6 +1,7 @@
 package org.example.spring_data_jpa.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.spring_data_jpa.dto.request.ProductRequest;
 import org.example.spring_data_jpa.dto.response.ProductResponse;
 import org.example.spring_data_jpa.entity.Category;
@@ -11,17 +12,22 @@ import org.example.spring_data_jpa.repository.CategoryRepository;
 import org.example.spring_data_jpa.repository.ProductRepository;
 import org.example.spring_data_jpa.service.ProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
+
+    @Transactional(readOnly = true)
     @Override
     public ProductResponse findById(Long id) {
+        log.info("Finding product by id : {}", id);
         Product product = getById(id);
         return ProductMapper.toProductResponse(product);
     }
@@ -32,6 +38,7 @@ public class ProductServiceImpl implements ProductService {
         );
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ProductResponse findByName(String name) {
         Product product = productRepository.findByNameIgnoreCase(name).orElseThrow(
@@ -40,12 +47,14 @@ public class ProductServiceImpl implements ProductService {
         return ProductMapper.toProductResponse(product);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ProductResponse> findByCategory(Long categoryId) {
         return productRepository.findByCategoryId(categoryId).stream().map(ProductMapper::toProductResponse).toList();
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductResponse save(ProductRequest productRequest) {
         Optional<Category> categoryOptional = categoryRepository.findById(productRequest.getCategoryId());
@@ -63,6 +72,7 @@ public class ProductServiceImpl implements ProductService {
         return ProductMapper.toProductResponse(productSaved);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ProductResponse updateProduct(ProductRequest productRequest, Long id) {
         Product product = getById(id);

@@ -1,6 +1,7 @@
 package org.example.spring_data_jpa.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.spring_data_jpa.dto.request.CategoryRequest;
 import org.example.spring_data_jpa.dto.response.CategoryResponse;
 import org.example.spring_data_jpa.entity.Category;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -21,6 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse save(CategoryRequest categoryRequest) {
+        log.info("Saving category: {}", categoryRequest);
         Category category = Category.builder()
                 .name(categoryRequest.getName())
                 .description(categoryRequest.getDescription())
@@ -32,6 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse update(CategoryRequest categoryRequest, Long id) {
+        log.info("Updating category id {} : {}",id, categoryRequest);
         Category category = getById(id);
 
         category.setName(categoryRequest.getName());
@@ -42,6 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse findById(Long id) {
+        log.info("Finding category by id : {}", id);
         Category category = getById(id);
         return CategoryMapper.toCategoryResponse(category);
     }

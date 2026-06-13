@@ -1,7 +1,9 @@
 package org.example.spring_data_jpa.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.spring_data_jpa.dto.request.CategoryRequest;
+import org.example.spring_data_jpa.dto.response.BaseBodyResponse;
 import org.example.spring_data_jpa.dto.response.CategoryResponse;
 import org.example.spring_data_jpa.service.CategoryService;
 import org.springframework.http.ResponseEntity;
@@ -19,32 +21,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
+@Tag(name = "Category Controller")
 public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> findAll() {
-        return ResponseEntity.ok(categoryService.findAll());
+    public ResponseEntity<BaseBodyResponse<List<CategoryResponse>>> findAll() {
+        return BaseBodyResponse.success(categoryService.findAll(), "Success");
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.findById(id));
+    public ResponseEntity<BaseBodyResponse<CategoryResponse>> findById(@PathVariable Long id) {
+        return BaseBodyResponse.success(categoryService.findById(id),  "Success");
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> save(@RequestBody CategoryRequest categoryRequest) {
-        return ResponseEntity.ok(categoryService.save(categoryRequest));
+    public ResponseEntity<BaseBodyResponse<CategoryResponse>> save(@RequestBody CategoryRequest categoryRequest) {
+        return BaseBodyResponse.success(categoryService.save(categoryRequest), "Success");
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponse> update(@RequestBody CategoryRequest categoryRequest, @PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.update(categoryRequest, id));
+    public ResponseEntity<BaseBodyResponse<CategoryResponse>> update(@RequestBody CategoryRequest categoryRequest, @PathVariable Long id) {
+        return BaseBodyResponse.success(categoryService.update(categoryRequest, id), "Success");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<BaseBodyResponse<Void>> deleteById(@PathVariable Long id) {
         categoryService.deleteById(id);
-        return ResponseEntity.ok().build();
+        return BaseBodyResponse.success("Success");
     }
 }

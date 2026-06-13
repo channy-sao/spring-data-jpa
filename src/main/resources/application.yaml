@@ -4,6 +4,18 @@ spring:
   application:
     name: spring_data_jpa
 
+  logging:
+    file:
+      name: ./logs/spring-data-jpa.log
+    logback:
+      rollingPolicy:
+        max-file-size: 50MB
+        max-history: 7
+        file-name-pattern: ${logging.file.name}.%d{yyyy-MM-dd}.%i.log
+    level:
+      web: info
+      root: info
+
   datasource:
     url: jdbc:postgresql://localhost:5432/spring_data_jpa
     username: postgres
@@ -19,3 +31,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+  api-docs:
+    enabled: true
