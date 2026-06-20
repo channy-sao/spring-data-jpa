@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,5 +39,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<BaseBodyResponse<ProductResponse>> save(@RequestBody ProductRequest product) {
         return BaseBodyResponse.success(productService.save(product), "Success");
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<BaseBodyResponse<List<ProductResponse>>> filter(@RequestParam(defaultValue = "1") int page,
+                                                                          @RequestParam(defaultValue ="10") int size,
+                                                                          @RequestParam(required = false) String filter) {
+        return BaseBodyResponse.pageSuccess(productService.filter(page, size, filter), "Success");
     }
 }

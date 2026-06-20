@@ -13,6 +13,8 @@ public class ProductMapper {
         productResponse.setDescription(product.getDescription());
         productResponse.setPrice(product.getPrice());
         productResponse.setCategory(CategoryMapper.toCategoryResponse(product.getCategory()));
+        productResponse.setCreatedAt(product.getCreatedAt());
+        productResponse.setUpdatedAt(product.getUpdatedAt());
         return productResponse;
     }
 }

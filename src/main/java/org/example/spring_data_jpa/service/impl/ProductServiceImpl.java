@@ -3,6 +3,7 @@ package org.example.spring_data_jpa.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.spring_data_jpa.dto.request.ProductRequest;
+import org.example.spring_data_jpa.dto.response.PageResponse;
 import org.example.spring_data_jpa.dto.response.ProductResponse;
 import org.example.spring_data_jpa.entity.Category;
 import org.example.spring_data_jpa.entity.Product;
@@ -11,6 +12,10 @@ import org.example.spring_data_jpa.mapper.ProductMapper;
 import org.example.spring_data_jpa.repository.CategoryRepository;
 import org.example.spring_data_jpa.repository.ProductRepository;
 import org.example.spring_data_jpa.service.ProductService;
+import org.example.spring_data_jpa.specification.ProductSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     private Product getById(Long id) {
         return productRepository.findById(id).orElseThrow(
-                ()-> new NotFoundException("Product not found with id: " + id)
+                () -> new NotFoundException("Product not found with id: " + id)
         );
     }
 
@@ -42,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse findByName(String name) {
         Product product = productRepository.findByNameIgnoreCase(name).orElseThrow(
-                () -> new NotFoundException("Product not found with name :"+ name)
+                () -> new NotFoundException("Product not found with name :" + name)
         );
         return ProductMapper.toProductResponse(product);
     }
@@ -68,7 +73,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(productRequest.getPrice())
                 .description(productRequest.getDescription())
                 .build();
-        Product productSaved =productRepository.save(product);
+        Product productSaved = productRepository.save(product);
         return ProductMapper.toProductResponse(productSaved);
     }
 
@@ -94,5 +99,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteById(Long id) {
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<ProductResponse> filter(int page, int size, String filter) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+        Specification<Product> specification = Specification.where(ProductSpecification.findByCategoryName(filter)
+                .or(ProductSpecification.findByName(filter)));
+
+        Page<Product> productPage = productRepository.findAll(specification, pageRequest);
+        return productPage.map(ProductMapper::toProductResponse);
     }
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,4 +27,7 @@ public class ProductResponse {
     private BigDecimal price;
     @Schema(description = "category detail of product")
     private CategoryResponse category;
+
+    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
 }
